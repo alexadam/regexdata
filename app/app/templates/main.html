@@ -1,0 +1,108 @@
+<div class="container-fluid" ng-controller="mainCtrl">
+    <div class="row">
+        <button type="button" name="button" ng-click="addTextArea()">Add Text Area</button>
+        <button type="button" name="button" ng-click="addFilter()">Add Filter</button>
+        <button type="button" name="button" ng-click="applyFilters()">Apply Filters</button>
+    </div>
+    <div class="col-sm-6">
+        <div class="text-template" ng-repeat='textObj in textObjs'>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-1">Text:</label>
+                    <div class="col-sm-3">
+                        <input class="form-control" type="text" ng-model="textObj.id" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <textarea class="text-area" name="name" rows="20" ng-model="textObj.text"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button type="button" name="button" ng-click="removeTextArea(textObj.id)">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="filter-template" ng-repeat='filter in filters'>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-1">Input:</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" ng-model="filter.inputId">
+                            <option ng-selected="{{filter.inputId === textArea.id}}" ng-repeat="textArea in textObjs" value="{{textArea.id}}">{{textArea.id}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1">Type:</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" ng-model="filter.type">
+                            <option ng-selected="{{filter.type === type}}" ng-repeat="type in filterTypes" value="{{type}}">{{type}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="" ng-if="filter.type === 'Highlight'">
+                    <div class="form-group" >
+                        <label class="col-sm-1">Pattern:</label>
+                        <div class="col-sm-11">
+                            <input type="text" class="form-control" ng-model="filter.filter" />
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <label class="col-sm-1">Color:</label>
+                        <div class="col-sm-2">
+                            <input type="color" class="form-control" ng-model="filter.highlightColor" />
+                        </div>
+                    </div>
+                </div>
+                <div class="" ng-if="filter.type === 'Replace'">
+                    <div class="form-group" >
+                        <label class="col-sm-1">Replace:</label>
+                        <div class="col-sm-11">
+                            <input type="text" class="form-control" ng-model="filter.filter" />
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <label class="col-sm-1">With:</label>
+                        <div class="col-sm-11">
+                            <input type="text" class="form-control" ng-model="filter.replaceWith" />
+                        </div>
+                    </div>
+                </div>
+                <div class="" ng-if="filter.type === 'Extract'">
+                    <div class="form-group" >
+                        <label class="col-sm-1">Find:</label>
+                        <div class="col-sm-11">
+                            <input type="text" class="form-control" ng-model="filter.filter" />
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <label class="col-sm-1">Extract:</label>
+                        <div class="col-sm-11">
+                            <input type="text" class="form-control" ng-model="filter.extractTemplate" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1">Output:</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" ng-model="filter.outputId">
+                            <option ng-selected="{{filter.outputId === textArea.id}}" ng-repeat="textArea in textObjs" value="{{textArea.id}}">{{textArea.id}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button type="button" name="button" ng-click="removeFilter(filter.id)">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

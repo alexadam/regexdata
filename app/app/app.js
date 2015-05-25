@@ -1,5 +1,5 @@
 
-var regexDataApp = angular.module('regexDataApp', ['ngRoute']);
+var regexDataApp = angular.module('regexDataApp', ['ngRoute']);//, 'angularHighlightTextarea']);
 
 regexDataApp.config(function($routeProvider) {
         $routeProvider
@@ -15,17 +15,24 @@ regexDataApp.config(function($routeProvider) {
 
 );
 
-regexDataApp.controller('mainCtrl', function($scope) {
+regexDataApp.controller('mainCtrl', function($scope, $timeout) {
+    $scope.colors = ['#FAD23C', '#B2CE3B', '#E6582A', '#1200D8', '#8B46BA', '#2B8638', '#E6582A'];
+
     var emptyTextObj = {
         id: 0,
-        text: ''
+        text: '',
+        color: '',
+        state: 1 // 1 = maximized, 0 = minimized
     };
 
     var defaultInput = angular.copy(emptyTextObj);
     defaultInput.id = 1;
+    // defaultInput.color = '#'+Math.floor(Math.random()*16777215).toString(16);
+    defaultInput.color = $scope.colors[0];
 
     var defaultOutput = angular.copy(emptyTextObj);
     defaultOutput.id = 2;
+    defaultOutput.color = $scope.colors[1];
 
     $scope.textObjs = [];
     $scope.textObjs.push(defaultInput);
@@ -37,6 +44,7 @@ regexDataApp.controller('mainCtrl', function($scope) {
             function(p, v) {
                 return (p.id > v.id ? p.id : v.id);
             }) + 1; //get max index and increment
+        newTextObj.color = $scope.colors[newTextObj.id % $scope.colors.length];
         $scope.textObjs.push(newTextObj);
     }
 
@@ -49,15 +57,55 @@ regexDataApp.controller('mainCtrl', function($scope) {
         }
     }
 
+    $scope.getMinMaxText = function (id) {
+        var ta = $scope.getTextAreaById(id);
+        if (ta.state === 1) {
+            return 'minus';
+        }
+        if (ta.state === 0) {
+            return 'plus';
+        }
+    }
+
+    $scope.getMinMaxClass = function (id) {
+        var ta = $scope.getTextAreaById(id);
+        if (ta.state === 1) {
+            return 'maximized';
+        }
+        if (ta.state === 0) {
+            return 'minimized';
+        }
+    }
+
+    $scope.getMinMaxStyle = function (id) {
+        var ta = $scope.getTextAreaById(id);
+        if (ta.state === 1) {
+            return '';
+        }
+        if (ta.state === 0) {
+            // return 'border: solid 5px ' + ta.color + ';';
+            return 'background-color: ' + ta.color + '; color: white;';
+        }
+    }
+
+    $scope.setMinMax = function (id) {
+        var ta = $scope.getTextAreaById(id);
+        if (ta.state === 1) {
+            ta.state = 0;
+        }
+        else if (ta.state === 0) {
+            ta.state = 1;
+        }
+    }
+
     ////
-    $scope.filterTypes = ['Highlight', 'Replace', 'Extract'];
+    $scope.filterTypes = ['Replace', 'Extract'];
 
     var emptyFilterObj = {
         id : 1,
         inputId: 1,
         type: $scope.filterTypes[0],
         filter: '',
-        highlightColor: '#fe0000',
         replaceWith: '',
         extractTemplate: '',
         outputId : 2
@@ -105,21 +153,27 @@ regexDataApp.controller('mainCtrl', function($scope) {
         }
     }
 
+    $scope.getTAInputColorByFilterId = function (id) {
+        for (var i = 0; i < $scope.filters.length; i++) {
+            if ($scope.filters[i].id === id) {
+                var tmpTA = $scope.getTextAreaById($scope.filters[i].inputId);
+                return tmpTA.color;
+            }
+        }
+    }
+
+    $scope.getTAOutputColorByFilterId = function (id) {
+        for (var i = 0; i < $scope.filters.length; i++) {
+            if ($scope.filters[i].id === id) {
+                var tmpTA = $scope.getTextAreaById($scope.filters[i].outputId);
+                return tmpTA.color;
+            }
+        }
+    }
+
     $scope.applyFilters = function () {
         $scope.filters.forEach(function (filter) {
-            if (filter.type === 'Highlight') {
-                var re = new RegExp(filter.filter, 'gi');
-                var input = $scope.getTextAreaById(filter.inputId);
-                var inputText = input.text;
-
-                var result = inputText.match(re);
-                var output = $scope.getTextAreaById(filter.outputId);
-                var tmpOutputText = inputText;
-
-                tmpOutputText = tmpOutputText.replace(re, function(str) {return '<b>'+str+'</b>'})
-
-                output.text = tmpOutputText;
-            } else if (filter.type === 'Replace') {
+            if (filter.type === 'Replace') {
                 var re = new RegExp(filter.filter, 'gi');
                 var input = $scope.getTextAreaById(filter.inputId);
                 var inputText = input.text;
@@ -140,8 +194,10 @@ regexDataApp.controller('mainCtrl', function($scope) {
                 var tmpOutputText = '';
                 var result;
 
+                var newExtractTemplate = '\'' + filter.extractTemplate.replace(/\$([0-9]+)/gi, '\'+result[$1]+\'') + '\'';
+
                 while ((result = re.exec(inputText)) !== null) {
-                    tmpOutputText = tmpOutputText + ' ' + result;
+                    tmpOutputText += eval(newExtractTemplate);
                 }
 
                 output.text = tmpOutputText;

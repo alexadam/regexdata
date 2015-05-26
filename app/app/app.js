@@ -16,7 +16,7 @@ regexDataApp.config(function($routeProvider) {
 );
 
 regexDataApp.controller('mainCtrl', function($scope, $timeout) {
-    $scope.colors = ['#FAD23C', '#B2CE3B', '#E6582A', '#1200D8', '#8B46BA', '#2B8638', '#E6582A'];
+    $scope.colors = ['#FAD23C', '#B2CE3B', '#3BB2E2', '#1200D8', '#8B46BA', '#2B8638', '#E6582A'];
 
     var emptyTextObj = {
         id: 0,

@@ -18,26 +18,31 @@ label  {
     padding-top: 10px;
 }
 
-.text-template:nth-child(2n) {
-    /*background-color: #EBEBEB;*/
-}
-
-.text-template:nth-child(2n+1) {
-    /*background-color: #ACAFCB;*/
-}
-
 body {
-    /*background-color: #5B6666;
-    color: white;*/
-}
+    //background-color: #5B6666;
+    background-color: #EAEAEA;
+    background-color: #D1D1D1;
+    color: black;
 
-/*input {
-    background-color: #eee;
-}*/
+
+
+
+
+        background-color: #C6C6C6;
+        background-color: #D5D7D6;
+        background-color: #AAACA5;
+
+
+}
 
 .col-header {
-    border-bottom: solid 2px #000;
+    border-bottom: solid 5px #aaa;
     margin-bottom: 10px;
+    padding: 10px;
+}
+
+.col-footer {
+    border-top: solid 5px #aaa;
     padding: 10px;
 }
 
@@ -45,21 +50,29 @@ body {
     display: none;
 }
 
+.minimized > .form-group {
+    margin-bottom: 0;
+}
+
 .maximized {
     display: inline-block;
 }
 
-textarea {
-    /*border-radius: 1px;*/
-}
-
+/*.filter-limit:not(:nth-last-of-type) {*/
 .filter-limit {
-    border-bottom: solid 1px #444;
-    margin-bottom: 15px;
+    background-color: #EAEAEA;
+    padding: 10px;
+    padding-bottom: 0;
+    border-bottom: solid 1px #EAEAEA;
+    color: black;
+    margin-bottom: 5px;
+
 }
 
-.min-max-btn {
-    /*font-size: 20px;*/
-    font-weight: bold;
-    /*border-radius: 50%;*/
+.glyphicon-remove {
+    color: red;
+}
+
+.glyph-button {
+    background-color: rgba(255, 0, 0, 0);
 }

@@ -1,5 +1,4 @@
-
-var regexDataApp = angular.module('regexDataApp', ['ngRoute']);//, 'angularHighlightTextarea']);
+var regexDataApp = angular.module('regexDataApp', ['ngRoute']); //, 'angularHighlightTextarea']);
 
 regexDataApp.config(function($routeProvider) {
         $routeProvider
@@ -40,10 +39,16 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
 
     $scope.addTextArea = function() {
         var newTextObj = angular.copy(emptyTextObj);
-        newTextObj.id = $scope.textObjs.reduce(
-            function(p, v) {
-                return (p.id > v.id ? p.id : v.id);
-            }) + 1; //get max index and increment
+        var nextIndex = 0;
+
+        for (var i = 0; i < $scope.textObjs.length; i++) {
+            if ($scope.textObjs[i].id > nextIndex) {
+                nextIndex = $scope.textObjs[i].id;
+            }
+        }
+
+        newTextObj.id = nextIndex + 1;
+
         newTextObj.color = $scope.colors[newTextObj.id % $scope.colors.length];
         $scope.textObjs.push(newTextObj);
     }
@@ -57,7 +62,7 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
         }
     }
 
-    $scope.getMinMaxText = function (id) {
+    $scope.getMinMaxText = function(id) {
         var ta = $scope.getTextAreaById(id);
         if (ta.state === 1) {
             return 'minus';
@@ -67,7 +72,7 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
         }
     }
 
-    $scope.getMinMaxClass = function (id) {
+    $scope.getMinMaxClass = function(id) {
         var ta = $scope.getTextAreaById(id);
         if (ta.state === 1) {
             return 'maximized';
@@ -77,23 +82,21 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
         }
     }
 
-    $scope.getMinMaxStyle = function (id) {
+    $scope.getMinMaxStyle = function(id) {
         var ta = $scope.getTextAreaById(id);
         if (ta.state === 1) {
             return '';
         }
         if (ta.state === 0) {
-            // return 'border: solid 5px ' + ta.color + ';';
             return 'background-color: ' + ta.color + '; color: white;';
         }
     }
 
-    $scope.setMinMax = function (id) {
+    $scope.setMinMax = function(id) {
         var ta = $scope.getTextAreaById(id);
         if (ta.state === 1) {
             ta.state = 0;
-        }
-        else if (ta.state === 0) {
+        } else if (ta.state === 0) {
             ta.state = 1;
         }
     }
@@ -102,17 +105,17 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
     $scope.filterTypes = ['Replace', 'Extract'];
 
     var emptyFilterObj = {
-        id : 1,
+        id: 1,
         inputId: 1,
+        ignoreCase: true,
+        multiLine: true,
         type: $scope.filterTypes[0],
         filter: '',
         replaceWith: '',
         extractTemplate: '',
-        outputId : 2
+        outputId: 2
 
         ///TODO 'negative' regex
-        // TODO replace each group
-        // TODO add options: ignore case & multiline
         // TODO extract per line (preserve lines) / per text
     };
 
@@ -153,28 +156,38 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
         }
     }
 
-    $scope.getTAInputColorByFilterId = function (id) {
+    $scope.getTAInputColorByFilterId = function(id) {
         for (var i = 0; i < $scope.filters.length; i++) {
             if ($scope.filters[i].id === id) {
                 var tmpTA = $scope.getTextAreaById($scope.filters[i].inputId);
+                if (tmpTA === null || tmpTA === undefined) {
+                    return '#FFFFFF';
+                }
                 return tmpTA.color;
             }
         }
     }
 
-    $scope.getTAOutputColorByFilterId = function (id) {
+    $scope.getTAOutputColorByFilterId = function(id) {
         for (var i = 0; i < $scope.filters.length; i++) {
             if ($scope.filters[i].id === id) {
                 var tmpTA = $scope.getTextAreaById($scope.filters[i].outputId);
+                if (tmpTA === null || tmpTA === undefined) {
+                    return '#FFFFFF';
+                }
                 return tmpTA.color;
             }
         }
     }
 
-    $scope.applyFilters = function () {
-        $scope.filters.forEach(function (filter) {
+    $scope.applyFilters = function() {
+        $scope.filters.forEach(function(filter) {
             if (filter.type === 'Replace') {
-                var re = new RegExp(filter.filter, 'gi');
+                if (filter.filter.trim() === '') {
+                    return;
+                }
+
+                var re = new RegExp(filter.filter, 'g' + (filter.ignoreCase ? 'i' : '') + (filter.multiLine ? 'm' : ''));
                 var input = $scope.getTextAreaById(filter.inputId);
                 var inputText = input.text;
 
@@ -186,7 +199,11 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
 
                 output.text = tmpOutputText;
             } else if (filter.type === 'Extract') {
-                var re = new RegExp(filter.filter, 'gi');
+                if (filter.filter.trim() === '') {
+                    return;
+                }
+                
+                var re = new RegExp(filter.filter, 'g' + (filter.ignoreCase ? 'i' : '') + (filter.multiLine ? 'm' : ''));
                 var input = $scope.getTextAreaById(filter.inputId);
                 var inputText = input.text;
 

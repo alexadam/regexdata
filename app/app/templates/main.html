@@ -10,7 +10,8 @@
                     </div>
                 </div>
             </div>
-            <div class="filter-limit" ng-repeat='textObj in textObjs'>
+            <div class="filter-limit" ng-repeat='textObj in textObjs' style="bordera: solid 1px {{textObj.color}};border-lefta: solid 10px
+            {{textObj.color}};border-righta: solid 10px {{textObj.color}};">
                 <div class="form-horizontal">
                     <div class="form-group">
                         <label class="col-sm-1 larger-col">Text ID:</label>
@@ -32,10 +33,9 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <textarea class="text-area" id="{{'textArea' + textObj.id}}" name="name"
+                            <textarea class="text-area form-control" id="{{'textArea' + textObj.id}}" name="name"
                                 ng-class="getMinMaxClass(textObj.id)" ng-model="textObj.text" rows="15"
-                                style="border: solid 1px {{textObj.color}};border-left: solid 10px
-                                {{textObj.color}};"></textarea>
+                                style="border-left: solid 10px {{textObj.color}};"></textarea>
                         </div>
                     </div>
                 </div>
@@ -92,10 +92,10 @@
                             </select>
                         </div>
                         <label class="col-sm-2">
-                            <input name="name" type="checkbox" value=""/>
+                            <input name="name" type="checkbox" value="" ng-model="filter.ignoreCase"/>
                             Ignore Case</label>
                         <label class="col-sm-2">
-                            <input name="name" type="checkbox" value=""/>
+                            <input name="name" type="checkbox" value="" ng-model="filter.multiLine"/>
                             Multi Line</label>
                     </div>
                     <div class="" ng-if="filter.type === 'Replace'">

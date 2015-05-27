@@ -202,7 +202,7 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
                 if (filter.filter.trim() === '') {
                     return;
                 }
-                
+
                 var re = new RegExp(filter.filter, 'g' + (filter.ignoreCase ? 'i' : '') + (filter.multiLine ? 'm' : ''));
                 var input = $scope.getTextAreaById(filter.inputId);
                 var inputText = input.text;

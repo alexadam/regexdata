@@ -1,12 +1,23 @@
-.text-area {
+/*.text-area {
     width: 100%;
+    height : 300px;
+}*/
+
+textarea{
+width:400px;
+height:100px;
 }
+/*
+[class^='col-'] {
+    padding : 0px;
+    margin : 0px;
+}*/
 
 .btn {
     border-radius: 0;
 }
 
-.larger-col {
+.larger-col2 {
     padding-right: 0;
 }
 
@@ -31,7 +42,7 @@ body {
         background-color: #D1CCC8;
         /*background-color: white;*/
 
-
+    font-size : 12px;
 }
 
 .col-header {
@@ -66,9 +77,9 @@ body {
     color: black;
     margin-bottom: 10px;
 
-    box-shadow: inset 0px 0px 5px gray;
+    /*box-shadow: inset 0px 0px 5px gray;*/
     /*box-shadow: 0px 0px 5px gray;*/
-
+    position : relative;
 }
 
 .glyphicon-remove {
@@ -77,4 +88,30 @@ body {
 
 .glyph-button {
     background-color: rgba(255, 0, 0, 0);
+}
+
+.close-btn {
+    position : absolute;
+    /*background-color : gray;*/
+    width : 30px;
+    height : 30px;
+    right : 10px;
+    top : 0;
+}
+
+.min-btn {
+    position : absolute;
+    /*background-color : gray;*/
+    width : 30px;
+    height : 30px;
+    right : 50px;
+    top : 0;
+}
+
+
+.form-control {
+    font-size : 1.2rem;
+    font-weight : bold;
+    padding: 3px 6px;
+    border-radius: 0;
 }

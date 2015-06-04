@@ -14,6 +14,23 @@ regexDataApp.config(function($routeProvider) {
 
 );
 
+regexDataApp.filter('toInteger', function(){
+    return function(input) {
+      return parseInt(input, 10);
+    }
+});
+
+regexDataApp.directive('integer', function(){
+    return {
+        require: 'ngModel',
+        link: function(scope, ele, attr, ctrl){
+            ctrl.$parsers.unshift(function(viewValue){
+                return parseInt(viewValue, 10);
+            });
+        }
+    };
+});
+
 regexDataApp.controller('mainCtrl', function($scope, $timeout) {
     $scope.colors = ['#FAD23C', '#B2CE3B', '#3BB2E2', '#1200D8', '#8B46BA', '#2B8638', '#E6582A'];
 
@@ -49,15 +66,33 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
 
         newTextObj.id = nextIndex + 1;
 
-        newTextObj.color = $scope.colors[newTextObj.id % $scope.colors.length];
+        newTextObj.color = $scope.colors[(newTextObj.id - 1) % $scope.colors.length];
         $scope.textObjs.push(newTextObj);
     }
 
     $scope.removeTextArea = function(id) {
         for (var i = 0; i < $scope.textObjs.length; i++) {
-            if ($scope.textObjs[i].id === id) {
+            if ($scope.textObjs[i].id === parseInt(id)) {
                 $scope.textObjs.splice(i, 1);
                 break;
+            }
+        }
+        removeTAReferences(id);
+    }
+
+    function removeTAReferences(id) {
+        if ($scope.textObjs.length == 0 ) {
+            return;
+        }
+
+        var nId = parseInt(id);
+        for (var i = 0; i < $scope.filters.length; i++) {
+            var cFilter = $scope.filters[i];
+            if (cFilter.outputId === nId) {
+                cFilter.outputId = $scope.textObjs[0].id;
+            }
+            if (cFilter.inputId === nId) {
+                cFilter.inputId = $scope.textObjs[0].id;
             }
         }
     }
@@ -88,7 +123,7 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
             return '';
         }
         if (ta.state === 0) {
-            return 'background-color: ' + ta.color + '; color: white;';
+            return 'border 0; margin:0; background-color: ' + ta.color + '; color: white;';
         }
     }
 
@@ -114,9 +149,6 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
         replaceWith: '',
         extractTemplate: '',
         outputId: 2
-
-        ///TODO 'negative' regex
-        // TODO extract per line (preserve lines) / per text
     };
 
     var defaultFilter = angular.copy(emptyFilterObj);
@@ -156,28 +188,12 @@ regexDataApp.controller('mainCtrl', function($scope, $timeout) {
         }
     }
 
-    $scope.getTAInputColorByFilterId = function(id) {
-        for (var i = 0; i < $scope.filters.length; i++) {
-            if ($scope.filters[i].id === id) {
-                var tmpTA = $scope.getTextAreaById($scope.filters[i].inputId);
-                if (tmpTA === null || tmpTA === undefined) {
-                    return '#FFFFFF';
-                }
-                return tmpTA.color;
-            }
+    $scope.getTAColorByFilterId = function(id) {
+        var tmpTA = $scope.getTextAreaById(id);
+        if (tmpTA === null || tmpTA === undefined) {
+            return '#FFFFFF';
         }
-    }
-
-    $scope.getTAOutputColorByFilterId = function(id) {
-        for (var i = 0; i < $scope.filters.length; i++) {
-            if ($scope.filters[i].id === id) {
-                var tmpTA = $scope.getTextAreaById($scope.filters[i].outputId);
-                if (tmpTA === null || tmpTA === undefined) {
-                    return '#FFFFFF';
-                }
-                return tmpTA.color;
-            }
-        }
+        return tmpTA.color;
     }
 
     $scope.applyFilters = function() {

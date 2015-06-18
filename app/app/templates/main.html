@@ -1,127 +1,121 @@
 <div class="container-fluid" ng-controller="mainCtrl">
-    <div class="row">
-        <div class="col-sm-6 left-col">
+    <div class="row-fluid">
+        <div class="col-sm-18 left-col">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <div class="col-sm-12 text-left col-header2">
+                    <div class="col-sm-36 text-left">
                         <button class="btn btn-primary" name="button" ng-click="addTextArea()"
-                            type="button">Add
-                            Text Area</button>
+                            type="button">Add Text Area</button>
                     </div>
                 </div>
             </div>
             <div class="filter-limit" ng-repeat='textObj in textObjs' style="bordera: solid 1px {{textObj.color}};border-lefta: solid 10px
             {{textObj.color}};border-righta: solid 10px {{textObj.color}};">
                 <div class="form-horizontal">
+                            <div class="min-btn">
+                                <button class="btn glyph-button" name="button"
+                                    ng-click="setMinMax(textObj.id)" style="{{getMinMaxStyle(textObj.id)}}" type="button">
+                                    <span class="glyphicon glyphicon-{{getMinMaxText(textObj.id)}}"></span>
+                                </button>
+                            </div>
+                            <div class="close-btn">
+                                <button class="btn glyph-button" name="button"
+                                    ng-click="removeTextArea(textObj.id)" type="button">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </button>
+                            </div>
                     <div class="form-group">
-                        <label class="col-sm-1 larger-col">Text ID:</label>
-                        <div class="col-sm-2">
-                            <input class="form-control" max="999" min="1" ng-model="textObj.id" type="number"/>
-                        </div>
-                        <div class="col-sm-1 col-xs-9 col-sm-offset-7 larger-col">
-                            <button class="btn glyph-button" name="button"
-                                ng-click="setMinMax(textObj.id)" style="{{getMinMaxStyle(textObj.id)}}" type="button">
-                                <span class="glyphicon glyphicon-{{getMinMaxText(textObj.id)}}"></span>
-                            </button>
-                        </div>
-                        <div class="col-sm-1 col-xs-3">
-                            <button class="btn glyph-button" name="button"
-                                ng-click="removeTextArea(textObj.id)" type="button">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div>
+                        <label class="col-sm-10">Text id: {{textObj.id}}</label>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-12">
+                        <div class="col-sm-36">
                             <textarea class="text-area form-control" id="{{'textArea' + textObj.id}}" name="name"
-                                ng-class="getMinMaxClass(textObj.id)" ng-model="textObj.text" rows="15"
+                                ng-class="getMinMaxClass(textObj.id)" ng-model="textObj.text" rows="10"
                                 style="border-left: solid 10px {{textObj.color}};"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-18">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <div class="col-sm-10 col-header2">
-                        <button class="btn btn-primary" name="button" ng-click="addFilter()" type="button">Add
-                            Filter</button>
+                    <div class="col-sm-29">
+                        <button class="btn btn-primary" name="button" ng-click="addFilter()" type="button">Add Filter</button>
                     </div>
-                    <div class="col-sm-2 col-header2">
+                    <div class="col-sm-7">
                         <button class="btn btn-success" name="button" ng-click="applyFilters()"
-                            type="button">Apply
-                            Filters</button>
+                            type="button">Apply Filters</button>
                     </div>
                 </div>
             </div>
             <div class="filter-template" ng-repeat='filter in filters'>
                 <div class="form-horizontal filter-limit">
+                    <div class="close-btn">
+                        <button class="btn glyph-button" name="button"
+                            ng-click="removeFilter(filter.id)" type="button">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </div>
                     <div class="form-group">
-                        <label class="col-sm-1">Input:</label>
-                        <div class="col-sm-2">
+                        <label class="col-sm-3">Input:</label>
+                        <div class="col-sm-6">
                             <select class="form-control" ng-model="filter.inputId"
-                                style="border-left: solid 10px {{getTAInputColorByFilterId(filter.id)}}">
+                                style="border-left: solid 10px {{getTAColorByFilterId(filter.inputId)}}" integer>
                                 <option ng-repeat="textArea in textObjs"
                                     ng-selected="{{filter.inputId === textArea.id}}" style="border-left: solid 10px {{textArea.color}}"
                                     value="{{textArea.id}}">{{textArea.id}}</option>
                             </select>
                         </div>
-                        <label class="col-sm-1">Output:</label>
-                        <div class="col-sm-2">
+                        <label class="col-sm-3">Output:</label>
+                        <div class="col-sm-6">
                             <select class="form-control" ng-model="filter.outputId"
-                                style="border-left: solid 10px {{getTAOutputColorByFilterId(filter.id)}}">
+                                style="border-left: solid 10px {{getTAColorByFilterId(filter.outputId)}}" integer>
                                 <option ng-repeat="textArea in textObjs"
                                     ng-selected="{{filter.outputId === textArea.id}}" style="border-left: solid 10px {{textArea.color}}"
                                     value="{{textArea.id}}">{{textArea.id}}</option>
                             </select>
                         </div>
-                        <div class="col-sm-1 col-xs-3 col-xs-offset-9 col-sm-offset-5">
-                            <button class="btn glyph-button" name="button"
-                                ng-click="removeFilter(filter.id)" type="button">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-1">Type:</label>
-                        <div class="col-sm-2">
+                        <label class="col-sm-3">Type:</label>
+                        <div class="col-sm-6">
                             <select class="form-control" ng-model="filter.type">
                                 <option ng-repeat="type in filterTypes" ng-selected="{{filter.type === type}}"
                                     value="{{type}}">{{type}}</option>
                             </select>
                         </div>
-                        <label class="col-sm-2">
+                        <label class="col-sm-6">
                             <input name="name" type="checkbox" value="" ng-model="filter.ignoreCase"/>
                             Ignore Case</label>
-                        <label class="col-sm-2">
+                        <label class="col-sm-6">
                             <input name="name" type="checkbox" value="" ng-model="filter.multiLine"/>
                             Multi Line</label>
                     </div>
                     <div class="" ng-if="filter.type === 'Replace'">
                         <div class="form-group">
-                            <label class="col-sm-1">Replace:</label>
-                            <div class="col-sm-11">
+                            <label class="col-sm-3">Replace:</label>
+                            <div class="col-sm-33">
                                 <input class="form-control" ng-model="filter.filter" type="text" ng-trim="false"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-1">With:</label>
-                            <div class="col-sm-11">
+                            <label class="col-sm-3">With:</label>
+                            <div class="col-sm-33">
                                 <input class="form-control" ng-model="filter.replaceWith" type="text" ng-trim="false"/>
                             </div>
                         </div>
                     </div>
                     <div class="" ng-if="filter.type === 'Extract'">
                         <div class="form-group">
-                            <label class="col-sm-1">Find:</label>
-                            <div class="col-sm-11">
+                            <label class="col-sm-3">Find:</label>
+                            <div class="col-sm-33">
                                 <input class="form-control" ng-model="filter.filter" type="text" ng-trim="false"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-1">Extract:</label>
-                            <div class="col-sm-11">
+                            <label class="col-sm-3">Extract:</label>
+                            <div class="col-sm-33">
                                 <input class="form-control" ng-model="filter.extractTemplate" type="text" ng-trim="false"/>
                             </div>
                         </div>
@@ -135,8 +129,7 @@
             <div class="form-horizontal col-footer">
                 <div class="form-group">
                     <button class="btn btn-success" name="button" ng-click="applyFilters()"
-                        type="button">Apply
-                        Filters</button>
+                        type="button">Apply Filters</button>
                 </div>
             </div>
         </div>
